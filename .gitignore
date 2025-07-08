@@ -11,9 +11,6 @@ pip-log.txt
 pip-delete-this-directory.txt
 .env
 
-# Database - 개인 데이터 파일은 업로드하지 않음
-pushup_records.json
-
 # IDE
 .vscode/
 .idea/

@@ -1,0 +1,568 @@
+[
+  {
+    "id": 3,
+    "date": "2025-07-01",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "participate",
+        "standard_pushups": 50,
+        "knee_pushups": 0,
+        "total_pushups": 50,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "participate",
+        "standard_pushups": 13,
+        "knee_pushups": 20,
+        "total_pushups": 33,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "participate",
+        "standard_pushups": 7,
+        "knee_pushups": 20,
+        "total_pushups": 27,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 15,
+        "total_pushups": 15,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 10,
+        "total_pushups": 10,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      }
+    ],
+    "guests": [
+      {
+        "name": "경아",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 3,
+        "total_pushups": 3,
+        "type": "guest"
+      },
+      {
+        "name": "규탁",
+        "status": "participate",
+        "standard_pushups": 20,
+        "knee_pushups": 0,
+        "total_pushups": 20,
+        "type": "guest"
+      }
+    ],
+    "created_at": "2025-07-04T15:12:28.026649"
+  },
+  {
+    "id": 4,
+    "date": "2025-07-02",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "participate",
+        "standard_pushups": 14,
+        "knee_pushups": 0,
+        "total_pushups": 14,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "participate",
+        "standard_pushups": 1,
+        "knee_pushups": 8,
+        "total_pushups": 9,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 2,
+        "knee_pushups": 4,
+        "total_pushups": 6,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      }
+    ],
+    "guests": [
+      {
+        "name": "경아",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 3,
+        "total_pushups": 3,
+        "type": "guest"
+      }
+    ],
+    "created_at": "2025-07-04T15:20:24.194233"
+  },
+  {
+    "id": 4,
+    "date": "2025-06-24",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "participate",
+        "standard_pushups": 10,
+        "knee_pushups": 0,
+        "total_pushups": 10,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 5,
+        "total_pushups": 5,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 3,
+        "total_pushups": 3,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 3,
+        "total_pushups": 3,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "participate",
+        "standard_pushups": 1,
+        "knee_pushups": 0,
+        "total_pushups": 1,
+        "type": "regular"
+      }
+    ],
+    "guests": [],
+    "created_at": "2025-07-07T14:28:36.492609"
+  },
+  {
+    "id": 5,
+    "date": "2025-06-26",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "participate",
+        "standard_pushups": 50,
+        "knee_pushups": 0,
+        "total_pushups": 50,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "participate",
+        "standard_pushups": 16,
+        "knee_pushups": 0,
+        "total_pushups": 16,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "participate",
+        "standard_pushups": 2,
+        "knee_pushups": 2,
+        "total_pushups": 4,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 9,
+        "total_pushups": 9,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 10,
+        "total_pushups": 10,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "participate",
+        "standard_pushups": 1,
+        "knee_pushups": 0,
+        "total_pushups": 1,
+        "type": "regular"
+      }
+    ],
+    "guests": [
+      {
+        "name": "석준",
+        "status": "participate",
+        "standard_pushups": 12,
+        "knee_pushups": 0,
+        "total_pushups": 12,
+        "type": "guest"
+      }
+    ],
+    "created_at": "2025-07-07T14:29:46.237666"
+  },
+  {
+    "id": 6,
+    "date": "2025-06-27",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "participate",
+        "standard_pushups": 2,
+        "knee_pushups": 20,
+        "total_pushups": 22,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 10,
+        "total_pushups": 10,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 11,
+        "total_pushups": 11,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      }
+    ],
+    "guests": [],
+    "created_at": "2025-07-07T14:30:25.890745"
+  },
+  {
+    "id": 6,
+    "date": "2025-07-04",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "participate",
+        "standard_pushups": 55,
+        "knee_pushups": 0,
+        "total_pushups": 55,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "participate",
+        "standard_pushups": 35,
+        "knee_pushups": 0,
+        "total_pushups": 35,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "participate",
+        "standard_pushups": 3,
+        "knee_pushups": 7,
+        "total_pushups": 10,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 3,
+        "knee_pushups": 10,
+        "total_pushups": 13,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      }
+    ],
+    "guests": [
+      {
+        "name": "재욱",
+        "status": "participate",
+        "standard_pushups": 60,
+        "knee_pushups": 0,
+        "total_pushups": 60,
+        "type": "guest"
+      }
+    ],
+    "created_at": "2025-07-07T16:58:47.391631"
+  },
+  {
+    "id": 7,
+    "date": "2025-06-23",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "participate",
+        "standard_pushups": 50,
+        "knee_pushups": 0,
+        "total_pushups": 50,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "participate",
+        "standard_pushups": 5,
+        "knee_pushups": 0,
+        "total_pushups": 5,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 3,
+        "total_pushups": 3,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 2,
+        "total_pushups": 2,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 0,
+        "knee_pushups": 2,
+        "total_pushups": 2,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      }
+    ],
+    "guests": [],
+    "created_at": "2025-07-07T16:59:53.486588"
+  },
+  {
+    "id": 8,
+    "date": "2025-07-03",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "participate",
+        "standard_pushups": 40,
+        "knee_pushups": 0,
+        "total_pushups": 40,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "participate",
+        "standard_pushups": 16,
+        "knee_pushups": 0,
+        "total_pushups": 16,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "participate",
+        "standard_pushups": 2,
+        "knee_pushups": 10,
+        "total_pushups": 12,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 1,
+        "knee_pushups": 10,
+        "total_pushups": 11,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      }
+    ],
+    "guests": [
+      {
+        "name": "종원",
+        "status": "participate",
+        "standard_pushups": 10,
+        "knee_pushups": 0,
+        "total_pushups": 10,
+        "type": "guest"
+      }
+    ],
+    "created_at": "2025-07-07T17:10:35.549098"
+  },
+  {
+    "id": 9,
+    "date": "2025-07-07",
+    "time": 10,
+    "members": [
+      {
+        "name": "병선",
+        "status": "participate",
+        "standard_pushups": 55,
+        "knee_pushups": 0,
+        "total_pushups": 55,
+        "type": "regular"
+      },
+      {
+        "name": "유경",
+        "status": "participate",
+        "standard_pushups": 34,
+        "knee_pushups": 0,
+        "total_pushups": 34,
+        "type": "regular"
+      },
+      {
+        "name": "선주",
+        "status": "participate",
+        "standard_pushups": 10,
+        "knee_pushups": 15,
+        "total_pushups": 25,
+        "type": "regular"
+      },
+      {
+        "name": "효성",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      },
+      {
+        "name": "현정",
+        "status": "participate",
+        "standard_pushups": 7,
+        "knee_pushups": 12,
+        "total_pushups": 19,
+        "type": "regular"
+      },
+      {
+        "name": "예솔",
+        "status": "absent",
+        "standard_pushups": 0,
+        "knee_pushups": 0,
+        "total_pushups": 0,
+        "type": "regular"
+      }
+    ],
+    "guests": [],
+    "created_at": "2025-07-08T11:31:51.132480"
+  }
+]
