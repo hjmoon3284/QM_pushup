@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>푸시업 트래커 - 우리팀 운동 기록</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 300;
+            text-align: center;
+        }
+
+        .nav-menu {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f1f3f4;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .nav-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background-color: #495057;
+            transform: translateY(-2px);
+        }
+
+        .common-info {
+            background-color: #f8f4e6;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #e8dcc0;
+        }
+
+        .member-records, .guest-records {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 25px;
+            background-color: #ffffff;
+        }
+
+        .guest-records {
+            background-color: #faf8f5;
+            border-color: #d4b896;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6c757d;
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+        }
+
+        .member-row {
+            display: grid;
+            grid-template-columns: 150px 1fr 1fr 120px;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .member-row:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .guest-row {
+            display: grid;
+            grid-template-columns: 180px 1fr 1fr 80px;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 15px;
+            background-color: #f5f2ed;
+            border-radius: 10px;
+            border: 1px solid #d4b896;
+            transition: all 0.3s ease;
+        }
+
+        .guest-row:hover {
+            background-color: #ede7dc;
+            transform: translateY(-2px);
+        }
+
+        .member-name, .guest-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .guest-name {
+            color: #8b7355;
+        }
+
+        .pushup-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .pushup-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .pushup-input {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid #dee2e6;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #ffffff;
+        }
+
+        .standard-input {
+            border-color: #28a745;
+        }
+
+        .standard-input:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .knee-input {
+            border-color: #ffc107;
+        }
+
+        .knee-input:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
+        }
+
+        .guest-input {
+            border-color: #8b7355;
+        }
+
+        .guest-input:focus {
+            border-color: #8b7355;
+            box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+        }
+
+        .status-select {
+            font-size: 14px;
+            padding: 10px;
+            border: 2px solid #6f42c1;
+            border-radius: 6px;
+            background-color: #ffffff;
+        }
+
+        .status-select:focus {
+            border-color: #6f42c1;
+            box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1);
+        }
+
+        .add-guest-btn {
+            background-color: #8b7355;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .add-guest-btn:hover {
+            background-color: #6d5a44;
+            transform: translateY(-2px);
+        }
+
+        .remove-guest-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .remove-guest-btn:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .save-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .member-row, .guest-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .nav-btn {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>푸시업 트래커</h1>
+
+        <div class="nav-menu">
+            <a href="/" class="nav-btn">기록 입력</a>
+            <a href="/records" class="nav-btn">기록 조회</a>
+            <a href="/charts" class="nav-btn">전체 분석</a>
+            <a href="/growth" class="nav-btn">개인 성장</a>
+        </div>
+
+        <div class="common-info">
+            <h3>공통 정보</h3>
+
+            <div class="form-group">
+                <label for="exercise-date">운동 날짜:</label>
+                <input type="date" id="exercise-date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="exercise-time">운동 시간 (분):</label>
+                <input type="number" id="exercise-time" min="1" max="60" value="10" required>
+            </div>
+        </div>
+
+        <div class="member-records">
+            <h3>정규 팀원 기록</h3>
+            <div id="member-list"></div>
+        </div>
+
+        <div class="guest-records">
+            <h3>오늘의 게스트</h3>
+            <div id="guest-list"></div>
+            <button type="button" class="add-guest-btn" onclick="addGuest()">
+                게스트 추가하기
+            </button>
+        </div>
+
+        <button type="button" class="save-btn" onclick="saveRecord()">
+            오늘의 기록 저장하기
+        </button>
+    </div>
+
+    <script>
+        const teamMembers = ['병선', '유경', '선주', '효성', '현정', '예솔'];
+        let guestCounter = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('exercise-date').value = new Date().toISOString().split('T')[0];
+            createMemberInputs();
+        });
+
+        function createMemberInputs() {
+            const memberList = document.getElementById('member-list');
+            memberList.innerHTML = '';
+
+            teamMembers.forEach(function(memberName, index) {
+                const memberRow = document.createElement('div');
+                memberRow.className = 'member-row';
+
+                memberRow.innerHTML = `
+                    <div class="member-name">
+                        ${memberName}
+                    </div>
+                    <div class="pushup-group">
+                        <div class="pushup-label">정자세</div>
+                        <input type="number"
+                               class="pushup-input standard-input"
+                               id="standard-${index}"
+                               min="0"
+                               max="1000"
+                               placeholder="0"
+                               data-member="${memberName}"
+                               data-type="standard">
+                    </div>
+                    <div class="pushup-group">
+                        <div class="pushup-label">무릎자세</div>
+                        <input type="number"
+                               class="pushup-input knee-input"
+                               id="knee-${index}"
+                               min="0"
+                               max="1000"
+                               placeholder="0"
+                               data-member="${memberName}"
+                               data-type="knee">
+                    </div>
+                    <div class="pushup-group">
+                        <div class="pushup-label">상태</div>
+                        <select class="status-select"
+                                id="status-${index}"
+                                data-member="${memberName}"
+                                onchange="handleStatusChange(${index})">
+                            <option value="participate">참여</option>
+                            <option value="absent">미참여</option>
+                        </select>
+                    </div>
+                `;
+
+                memberList.appendChild(memberRow);
+            });
+        }
+
+        function addGuest() {
+            const guestList = document.getElementById('guest-list');
+            const guestId = guestCounter++;
+
+            const guestRow = document.createElement('div');
+            guestRow.className = 'guest-row';
+            guestRow.id = `guest-row-${guestId}`;
+
+            guestRow.innerHTML = `
+                <div class="pushup-group">
+                    <div class="pushup-label">이름</div>
+                    <input type="text"
+                           class="pushup-input guest-input"
+                           id="guest-name-${guestId}"
+                           placeholder="게스트 이름"
+                           data-guest-id="${guestId}">
+                </div>
+                <div class="pushup-group">
+                    <div class="pushup-label">정자세</div>
+                    <input type="number"
+                           class="pushup-input standard-input"
+                           id="guest-standard-${guestId}"
+                           min="0"
+                           max="1000"
+                           placeholder="0"
+                           data-guest-id="${guestId}">
+                </div>
+                <div class="pushup-group">
+                    <div class="pushup-label">무릎자세</div>
+                    <input type="number"
+                           class="pushup-input knee-input"
+                           id="guest-knee-${guestId}"
+                           min="0"
+                           max="1000"
+                           placeholder="0"
+                           data-guest-id="${guestId}">
+                </div>
+                <div class="pushup-group">
+                    <button type="button" class="remove-guest-btn" onclick="removeGuest(${guestId})">
+                        삭제
+                    </button>
+                </div>
+            `;
+
+            guestList.appendChild(guestRow);
+        }
+
+        function removeGuest(guestId) {
+            const guestRow = document.getElementById(`guest-row-${guestId}`);
+            if (guestRow) {
+                guestRow.remove();
+            }
+        }
+
+        function handleStatusChange(index) {
+            const statusSelect = document.getElementById(`status-${index}`);
+            const standardInput = document.getElementById(`standard-${index}`);
+            const kneeInput = document.getElementById(`knee-${index}`);
+
+            if (statusSelect.value === 'absent') {
+                standardInput.disabled = true;
+                kneeInput.disabled = true;
+                standardInput.value = '';
+                kneeInput.value = '';
+                standardInput.style.backgroundColor = '#f0f0f0';
+                kneeInput.style.backgroundColor = '#f0f0f0';
+            } else {
+                standardInput.disabled = false;
+                kneeInput.disabled = false;
+                standardInput.style.backgroundColor = 'white';
+                kneeInput.style.backgroundColor = 'white';
+            }
+        }
+
+        function saveRecord() {
+            const date = document.getElementById('exercise-date').value;
+            const time = document.getElementById('exercise-time').value;
+
+            if (!date || !time) {
+                alert('날짜와 운동 시간을 입력해주세요!');
+                return;
+            }
+
+            const memberData = [];
+            teamMembers.forEach(function(memberName, index) {
+                const statusSelect = document.getElementById(`status-${index}`);
+                const standardInput = document.getElementById(`standard-${index}`);
+                const kneeInput = document.getElementById(`knee-${index}`);
+
+                const status = statusSelect.value;
+                const standardCount = parseInt(standardInput.value) || 0;
+                const kneeCount = parseInt(kneeInput.value) || 0;
+
+                memberData.push({
+                    name: memberName,
+                    status: status,
+                    standard_pushups: standardCount,
+                    knee_pushups: kneeCount,
+                    total_pushups: standardCount + kneeCount,
+                    type: 'regular'
+                });
+            });
+
+            const guestData = [];
+            const guestRows = document.querySelectorAll('.guest-row');
+
+            guestRows.forEach(function(row) {
+                const guestId = row.id.split('-')[2];
+                const nameInput = document.getElementById(`guest-name-${guestId}`);
+                const standardInput = document.getElementById(`guest-standard-${guestId}`);
+                const kneeInput = document.getElementById(`guest-knee-${guestId}`);
+
+                const name = nameInput.value.trim();
+                const standardCount = parseInt(standardInput.value) || 0;
+                const kneeCount = parseInt(kneeInput.value) || 0;
+
+                if (name) {
+                    guestData.push({
+                        name: name,
+                        status: 'participate',
+                        standard_pushups: standardCount,
+                        knee_pushups: kneeCount,
+                        total_pushups: standardCount + kneeCount,
+                        type: 'guest'
+                    });
+                }
+            });
+
+            const recordData = {
+                date: date,
+                time: parseInt(time),
+                members: memberData,
+                guests: guestData
+            };
+
+            console.log('서버로 전송할 데이터:', recordData);
+
+            const saveBtn = document.querySelector('.save-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = '저장 중...';
+
+            fetch('/save_record', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(recordData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const participantCount = memberData.filter(member => member.status === 'participate').length;
+                    const guestCount = guestData.length;
+                    const totalStandard = [...memberData, ...guestData].reduce((sum, person) => sum + person.standard_pushups, 0);
+                    const totalKnee = [...memberData, ...guestData].reduce((sum, person) => sum + person.knee_pushups, 0);
+                    const totalPushups = totalStandard + totalKnee;
+
+                    let message = `기록이 성공적으로 저장되었습니다!
+
+날짜: ${date}
+운동시간: ${time}분
+정규팀원: ${participantCount}명`;
+
+                    if (guestCount > 0) {
+                        message += `
+게스트: ${guestCount}명`;
+                    }
+
+                    message += `
+정자세: ${totalStandard}개
+무릎자세: ${totalKnee}개
+총 푸시업: ${totalPushups}개
+기록 ID: ${data.record_id}`;
+
+                    alert(message);
+
+                } else {
+                    alert('저장 실패: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('저장 오류:', error);
+                alert('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+            })
+            .finally(() => {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '오늘의 기록 저장하기';
+            });
+        }
+    </script>
+</body>
+</html>

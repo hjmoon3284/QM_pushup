@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인별 성장 추이</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 300;
+            text-align: center;
+        }
+
+        .nav-menu {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f1f3f4;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .nav-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background-color: #495057;
+            transform: translateY(-2px);
+        }
+
+        .member-selector {
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #f8f4e6;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e8dcc0;
+        }
+
+        .member-selector h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 400;
+        }
+
+        .member-btn {
+            background-color: #ffffff;
+            color: #495057;
+            border: 2px solid #dee2e6;
+            padding: 12px 20px;
+            margin: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .member-btn.active, .member-btn:hover {
+            background-color: #6c757d;
+            color: white;
+            border-color: #6c757d;
+            transform: translateY(-2px);
+        }
+
+        .chart-container {
+            height: 500px;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+        }
+
+        .stats-info {
+            background-color: #f8f4e6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #e8dcc0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 300;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+            background-color: #f8f4e6;
+            border-radius: 10px;
+            border: 1px solid #e8dcc0;
+        }
+
+        @media (max-width: 768px) {
+            .member-btn {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .nav-btn {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>개인별 성장 추이</h1>
+
+        <div class="nav-menu">
+            <a href="/" class="nav-btn">기록 입력</a>
+            <a href="/records" class="nav-btn">기록 조회</a>
+            <a href="/charts" class="nav-btn">전체 분석</a>
+            <a href="/growth" class="nav-btn">개인 성장</a>
+        </div>
+
+        <div class="member-selector">
+            <h3>팀원 선택</h3>
+            <button class="member-btn active" onclick="selectMember('병선')">병선</button>
+            <button class="member-btn" onclick="selectMember('유경')">유경</button>
+            <button class="member-btn" onclick="selectMember('선주')">선주</button>
+            <button class="member-btn" onclick="selectMember('효성')">효성</button>
+            <button class="member-btn" onclick="selectMember('현정')">현정</button>
+            <button class="member-btn" onclick="selectMember('예솔')">예솔</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="growthChart"></canvas>
+        </div>
+
+        <div id="stats-section"></div>
+    </div>
+
+    <script>
+        let currentMember = '병선';
+        let growthChart = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('개인 성장 페이지 로드됨');
+            loadMemberChart();
+        });
+
+        function selectMember(memberName) {
+            currentMember = memberName;
+
+            document.querySelectorAll('.member-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            console.log('팀원 선택:', memberName);
+            loadMemberChart();
+        }
+
+        function loadMemberChart() {
+            console.log('개인 차트 로딩 시작:', currentMember);
+
+            fetch(`/get_individual_chart_data?member=${currentMember}`)
+                .then(response => {
+                    console.log('개인 차트 응답 상태:', response.status);
+                    if (!response.ok) {
+                        throw new Error('네트워크 응답이 좋지 않습니다');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('받은 개인 차트 데이터:', data);
+                    if (data.success) {
+                        createGrowthChart(data.data);
+                        showStats(data.data);
+                    } else {
+                        showNoData();
+                    }
+                })
+                .catch(error => {
+                    console.error('개인 차트 데이터 로딩 오류:', error);
+                    showNoData();
+                });
+        }
+
+        function createGrowthChart(data) {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+
+            if (growthChart) {
+                growthChart.destroy();
+            }
+
+            if (data.dates.length === 0) {
+                showNoData();
+                return;
+            }
+
+            growthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [
+                        {
+                            label: '정자세',
+                            data: data.standard,
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            borderWidth: 1,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: '무릎자세',
+                            data: data.knee,
+                            borderColor: '#ffc107',
+                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                            borderWidth: 1,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `${currentMember}의 성장 추이 (참여한 날만)`,
+                            font: {
+                                size: 18
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '푸시업 개수',
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '운동한 날짜',
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        function showStats(data) {
+            if (data.total.length === 0) {
+                showNoData();
+                return;
+            }
+
+            const firstRecord = data.total[0];
+            const lastRecord = data.total[data.total.length - 1];
+            const improvement = lastRecord - firstRecord;
+            const improvementPercent = firstRecord > 0 ? ((improvement / firstRecord) * 100).toFixed(1) : 0;
+
+            const maxStandard = Math.max(...data.standard);
+            const maxKnee = Math.max(...data.knee);
+            const maxTotal = Math.max(...data.total);
+
+            const avgStandard = (data.standard.reduce((a, b) => a + b, 0) / data.standard.length).toFixed(1);
+            const avgKnee = (data.knee.reduce((a, b) => a + b, 0) / data.knee.length).toFixed(1);
+
+            document.getElementById('stats-section').innerHTML = `
+                <div class="stats-info">
+                    <h3>${currentMember}의 성장 통계</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${data.total.length}</div>
+                            <div class="stat-label">총 운동일</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${firstRecord}</div>
+                            <div class="stat-label">첫 기록</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${lastRecord}</div>
+                            <div class="stat-label">최근 기록</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" style="color: ${improvement >= 0 ? '#28a745' : '#dc3545'}">
+                                ${improvement > 0 ? '+' : ''}${improvement}개
+                            </div>
+                            <div class="stat-label">총 향상 (${improvementPercent}%)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${maxTotal}</div>
+                            <div class="stat-label">최고 기록</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${avgStandard}</div>
+                            <div class="stat-label">평균 정자세</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${avgKnee}</div>
+                            <div class="stat-label">평균 무릎자세</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${maxStandard}</div>
+                            <div class="stat-label">최고 정자세</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showNoData() {
+            const chartContainer = document.querySelector('.chart-container');
+            chartContainer.innerHTML = `
+                <div class="no-data">
+                    <h3>${currentMember}의 운동 기록이 없습니다</h3>
+                    <p>아직 운동 기록이 없거나 모든 기록이 0개입니다.</p>
+                </div>
+            `;
+
+            document.getElementById('stats-section').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

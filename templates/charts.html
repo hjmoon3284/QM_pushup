@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>푸시업 성장 분석</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 300;
+            text-align: center;
+        }
+
+        .nav-menu {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f1f3f4;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .nav-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background-color: #495057;
+            transform: translateY(-2px);
+        }
+
+        .period-selector {
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #f8f4e6;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e8dcc0;
+        }
+
+        .period-selector h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 400;
+        }
+
+        .period-btn {
+            background-color: #ffffff;
+            color: #495057;
+            border: 2px solid #dee2e6;
+            padding: 12px 24px;
+            margin: 0 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .period-btn.active, .period-btn:hover {
+            background-color: #6c757d;
+            color: white;
+            border-color: #6c757d;
+            transform: translateY(-2px);
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .chart-title {
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+
+        .team-charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 18px;
+            color: #6c757d;
+            background-color: #f8f4e6;
+            border-radius: 10px;
+            border: 1px solid #e8dcc0;
+        }
+
+        @media (max-width: 768px) {
+            .period-btn {
+                display: block;
+                margin: 8px 0;
+            }
+
+            .team-charts {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-btn {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>푸시업 성장 분석</h1>
+
+        <div class="nav-menu">
+            <a href="/" class="nav-btn">기록 입력</a>
+            <a href="/records" class="nav-btn">기록 조회</a>
+            <a href="/charts" class="nav-btn">전체 분석</a>
+            <a href="/growth" class="nav-btn">개인 성장</a>
+        </div>
+
+        <div class="period-selector">
+            <h3>분석 기간 선택</h3>
+            <button class="period-btn active" onclick="changePeriod('week')">주간</button>
+            <button class="period-btn" onclick="changePeriod('month')">월간</button>
+            <button class="period-btn" onclick="changePeriod('quarter')">분기</button>
+            <button class="period-btn" onclick="changePeriod('year')">연간</button>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-title">팀 전체 푸시업 추이</div>
+                <div class="chart-container">
+                    <canvas id="totalChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-charts" id="memberCharts">
+            <div class="loading">데이터를 불러오는 중...</div>
+        </div>
+    </div>
+
+    <script>
+        let currentPeriod = 'week';
+        let charts = {};
+
+        const memberColors = {
+            '병선': '#6c757d',
+            '유경': '#495057',
+            '선주': '#8b7355',
+            '효성': '#adb5bd',
+            '현정': '#28a745',
+            '예솔': '#ffc107'
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('차트 페이지 로드됨');
+            loadChartData();
+        });
+
+        function changePeriod(period) {
+            currentPeriod = period;
+
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            console.log('기간 변경:', period);
+            loadChartData();
+        }
+
+        function loadChartData() {
+            console.log('차트 데이터 로딩 시작, 기간:', currentPeriod);
+
+            // 기존 차트들 삭제
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            charts = {};
+
+            fetch(`/get_chart_data?period=${currentPeriod}`)
+                .then(response => {
+                    console.log('차트 데이터 응답 상태:', response.status);
+                    if (!response.ok) {
+                        throw new Error('네트워크 응답이 좋지 않습니다');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('받은 차트 데이터:', data);
+                    if (data.success) {
+                        createCharts(data.data);
+                    } else {
+                        console.error('차트 데이터 로딩 실패:', data.message);
+                        document.getElementById('memberCharts').innerHTML =
+                            '<div class="loading">데이터 로딩에 실패했습니다: ' + data.message + '</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('차트 데이터 로딩 오류:', error);
+                    document.getElementById('memberCharts').innerHTML =
+                        '<div class="loading">데이터 로딩 중 오류가 발생했습니다: ' + error.message + '</div>';
+                });
+        }
+
+        function createCharts(data) {
+            console.log('차트 생성 시작, 데이터:', data);
+
+            if (!data.dates || data.dates.length === 0) {
+                document.getElementById('memberCharts').innerHTML =
+                    '<div class="loading">분석할 데이터가 없습니다.<br>먼저 운동 기록을 입력해주세요!</div>';
+                return;
+            }
+
+            createTotalChart(data);
+            createMemberCharts(data);
+        }
+
+        function createTotalChart(data) {
+            const ctx = document.getElementById('totalChart').getContext('2d');
+
+            charts.total = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: '팀 전체 푸시업',
+                        data: data.totals,
+                        borderColor: '#6c757d',
+                        backgroundColor: 'rgba(108, 117, 125, 0.1)',
+                        borderWidth: 1,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: `${getPeriodKorean(currentPeriod)} 팀 전체 성과`,
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '푸시업 개수',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: currentPeriod === 'week' ? '날짜' : '기간',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createMemberCharts(data) {
+            const memberChartsContainer = document.getElementById('memberCharts');
+            memberChartsContainer.innerHTML = '';
+
+            Object.keys(data.members).forEach(memberName => {
+                const memberData = data.members[memberName];
+
+                // 참여한 데이터가 있는 팀원만 차트 생성
+                const hasData = memberData.total.some(value => value > 0);
+                if (!hasData) return;
+
+                // 차트 카드 생성
+                const chartCard = document.createElement('div');
+                chartCard.className = 'chart-card';
+                chartCard.innerHTML = `
+                    <div class="chart-title">${memberName}의 성장 추이</div>
+                    <div class="chart-container">
+                        <canvas id="chart-${memberName}"></canvas>
+                    </div>
+                `;
+
+                memberChartsContainer.appendChild(chartCard);
+
+                // 차트 생성
+                const ctx = document.getElementById(`chart-${memberName}`).getContext('2d');
+
+                charts[memberName] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [
+                            {
+                                label: '정자세',
+                                data: memberData.standard,
+                                borderColor: '#28a745',
+                                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                                borderWidth: 1,
+                                fill: false,
+                                tension: 0.4,
+                                pointRadius: 3
+                            },
+                            {
+                                label: '무릎자세',
+                                data: memberData.knee,
+                                borderColor: '#ffc107',
+                                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                                borderWidth: 1,
+                                fill: false,
+                                tension: 0.4,
+                                pointRadius: 3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '푸시업 개수',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: currentPeriod === 'week' ? '날짜' : '기간',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function getPeriodKorean(period) {
+            const periods = {
+                'week': '주간',
+                'month': '월간',
+                'quarter': '분기별',
+                'year': '연간'
+            };
+            return periods[period] || '기간별';
+        }
+    </script>
+</body>
+</html>

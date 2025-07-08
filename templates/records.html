@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>푸시업 기록 조회</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 300;
+            text-align: center;
+        }
+
+        .nav-menu {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f1f3f4;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .nav-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background-color: #495057;
+            transform: translateY(-2px);
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: #f8f4e6;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e8dcc0;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 300;
+            color: #2c3e50;
+        }
+
+        .records-container {
+            margin-top: 40px;
+        }
+
+        .record-card {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .record-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .record-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .record-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .record-date {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .record-time {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .member-item {
+            background-color: #f8f9fa;
+            padding: 18px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #28a745;
+            transition: all 0.3s ease;
+        }
+
+        .member-item:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .member-item.absent {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .member-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .member-counts {
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .absent-text {
+            color: #dc3545;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .loading, .no-records {
+            text-align: center;
+            padding: 60px;
+            font-size: 18px;
+            color: #6c757d;
+            background-color: #f8f4e6;
+            border-radius: 10px;
+            border: 1px solid #e8dcc0;
+        }
+
+        h2, h4 {
+            color: #2c3e50;
+            margin: 20px 0 15px 0;
+            font-weight: 400;
+        }
+
+        h4 {
+            font-size: 16px;
+            padding-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .record-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .members-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-btn {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>푸시업 기록 조회</h1>
+
+        <div class="nav-menu">
+            <a href="/" class="nav-btn">기록 입력</a>
+            <a href="/records" class="nav-btn">기록 조회</a>
+            <a href="/charts" class="nav-btn">전체 분석</a>
+            <a href="/growth" class="nav-btn">개인 성장</a>
+        </div>
+
+        <div class="stats-summary" id="stats-summary">
+            <div class="stat-card">
+                <div class="stat-title">총 기록 수</div>
+                <div class="stat-value" id="total-records">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">총 푸시업</div>
+                <div class="stat-value" id="total-pushups">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">평균 (일별)</div>
+                <div class="stat-value" id="average-pushups">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">최고 기록</div>
+                <div class="stat-value" id="max-pushups">-</div>
+            </div>
+        </div>
+
+        <div class="records-container">
+            <h2>기록 목록</h2>
+            <div id="records-list" class="loading">
+                기록을 불러오는 중...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('페이지 로드됨');
+            loadRecords();
+            loadStats();
+        });
+
+        function loadRecords() {
+            console.log('기록 로딩 시작');
+
+            fetch('/get_records')
+                .then(response => {
+                    console.log('응답 상태:', response.status);
+                    if (!response.ok) {
+                        throw new Error('네트워크 응답이 좋지 않습니다');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('받은 데이터:', data);
+                    if (data.success) {
+                        displayRecords(data.records);
+                    } else {
+                        document.getElementById('records-list').innerHTML =
+                            '<div class="no-records">기록을 불러올 수 없습니다: ' + data.message + '</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('기록 로딩 오류:', error);
+                    document.getElementById('records-list').innerHTML =
+                        '<div class="no-records">기록을 불러오는 중 오류가 발생했습니다: ' + error.message + '</div>';
+                });
+        }
+
+        function loadStats() {
+            fetch('/get_stats')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('통계 데이터:', data);
+                    if (data.success) {
+                        displayStats(data.stats);
+                    }
+                })
+                .catch(error => {
+                    console.error('통계 로딩 오류:', error);
+                });
+        }
+
+        function displayRecords(records) {
+            console.log('기록 표시 함수 실행, 기록 수:', records ? records.length : 0);
+            const recordsList = document.getElementById('records-list');
+
+            if (!records || records.length === 0) {
+                recordsList.innerHTML = '<div class="no-records">아직 기록이 없습니다.<br>첫 번째 운동 기록을 남겨보세요!</div>';
+                return;
+            }
+
+            records.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            let html = '';
+
+            records.forEach(record => {
+                console.log('처리 중인 기록:', record);
+
+                const memberTotal = record.members ? record.members.reduce((sum, member) => sum + (member.total_pushups || 0), 0) : 0;
+                const guestTotal = record.guests ? record.guests.reduce((sum, guest) => sum + (guest.total_pushups || 0), 0) : 0;
+                const dayTotal = memberTotal + guestTotal;
+
+                const participantCount = record.members ? record.members.filter(member => member.status === 'participate').length : 0;
+                const guestCount = record.guests ? record.guests.length : 0;
+
+                html += `
+                    <div class="record-card" id="record-${record.id}">
+                        <div class="record-header">
+                            <div class="record-left">
+                                <div class="record-date">${formatDate(record.date)}</div>
+                                <div class="record-time">
+                                    ${record.time}분 운동 | 정규팀원: ${participantCount}명`;
+
+                if (guestCount > 0) {
+                    html += ` | 게스트: ${guestCount}명`;
+                }
+
+                html += ` | 총 ${dayTotal}개
+                                </div>
+                            </div>
+                            <div class="record-right">
+                                <button class="delete-btn" onclick="deleteRecord(${record.id}, '${record.date}')">
+                                    삭제
+                                </button>
+                            </div>
+                        </div>
+                `;
+
+                if (record.members && record.members.length > 0) {
+                    html += `
+                        <h4 style="border-bottom: 2px solid #6c757d;">정규 팀원</h4>
+                        <div class="members-grid">
+                    `;
+
+                    record.members.forEach(member => {
+                        if (member.status === 'participate') {
+                            html += `
+                                <div class="member-item">
+                                    <div class="member-name">${member.name}</div>
+                                    <div class="member-counts">
+                                        정자세: ${member.standard_pushups || 0}개<br>
+                                        무릎: ${member.knee_pushups || 0}개<br>
+                                        <strong>총: ${member.total_pushups || 0}개</strong>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            html += `
+                                <div class="member-item absent">
+                                    <div class="member-name">${member.name}</div>
+                                    <div class="absent-text">미참여</div>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    html += '</div>';
+                }
+
+                if (record.guests && record.guests.length > 0) {
+                    html += `
+                        <h4 style="border-bottom: 2px solid #8b7355; color: #8b7355;">오늘의 게스트</h4>
+                        <div class="members-grid">
+                    `;
+
+                    record.guests.forEach(guest => {
+                        html += `
+                            <div class="member-item" style="background-color: #f5f2ed; border-left-color: #8b7355;">
+                                <div class="member-name" style="color: #8b7355;">${guest.name}</div>
+                                <div class="member-counts">
+                                    정자세: ${guest.standard_pushups || 0}개<br>
+                                    무릎: ${guest.knee_pushups || 0}개<br>
+                                    <strong>총: ${guest.total_pushups || 0}개</strong>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    html += '</div>';
+                }
+
+                html += '</div>';
+            });
+
+            recordsList.innerHTML = html;
+        }
+
+        function displayStats(stats) {
+            document.getElementById('total-records').textContent = stats.total_records + '일';
+            document.getElementById('total-pushups').textContent = stats.total_pushups + '개';
+
+            if (stats.total_records > 0) {
+                const average = Math.round(stats.total_pushups / stats.total_records);
+                document.getElementById('average-pushups').textContent = average + '개';
+            }
+
+            document.getElementById('max-pushups').textContent = stats.max_daily + '개';
+        }
+
+        function deleteRecord(recordId, recordDate) {
+            const confirmDelete = confirm(`정말로 ${formatDate(recordDate)} 기록을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`);
+
+            if (!confirmDelete) {
+                return;
+            }
+
+            fetch(`/delete_record/${recordId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const recordCard = document.getElementById(`record-${recordId}`);
+                    if (recordCard) {
+                        recordCard.style.opacity = '0.5';
+                        recordCard.style.transition = 'opacity 0.3s';
+
+                        setTimeout(() => {
+                            recordCard.remove();
+
+                            const remainingRecords = document.querySelectorAll('.record-card');
+                            if (remainingRecords.length === 0) {
+                                document.getElementById('records-list').innerHTML =
+                                    '<div class="no-records">아직 기록이 없습니다.<br>첫 번째 운동 기록을 남겨보세요!</div>';
+                            }
+                        }, 300);
+                    }
+
+                    loadStats();
+                    alert(data.message);
+                } else {
+                    alert('삭제 실패: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('삭제 오류:', error);
+                alert('삭제 중 오류가 발생했습니다: ' + error.message);
+            });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString + 'T00:00:00');
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+
+            return `${year}년 ${month}월 ${day}일`;
+        }
+    </script>
+</body>
+</html>
