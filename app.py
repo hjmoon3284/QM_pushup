@@ -3,7 +3,7 @@ import json
 import os
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 DATA_FILE = 'pushup_records.json'
 TEAM_MEMBERS = ['병선', '유경', '선주', '효성', '현정', '예솔']
