@@ -3,10 +3,10 @@ import json
 import os
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 DATA_FILE = 'pushup_records.json'
-TEAM_MEMBERS = ['병선', '유경', '선주', '효성', '현정', '예솔']
+TEAM_MEMBERS = ['병선', '유경', '선주', '효성', '현정', '재욱']
 
 
 def load_records():
@@ -144,7 +144,8 @@ def get_stats():
                     'total_records': 0,
                     'total_pushups': 0,
                     'max_daily': 0,
-                    'member_stats': {}
+                    'member_stats': {},
+                    'guest_records': []  # 게스트 기록 추가
                 }
             })
 
@@ -153,10 +154,12 @@ def get_stats():
         daily_totals = []
         member_stats = {member: {'total': 0, 'days': 0} for member in TEAM_MEMBERS}
         guest_stats = {'total_pushups': 0, 'total_guests': 0, 'unique_guests': set()}
+        guest_records = []  # 게스트 상세 기록 저장
 
         for record in records:
             daily_total = 0
 
+            # 정규 팀원 통계
             for member_data in record['members']:
                 name = member_data['name']
                 total_count = member_data.get('total_pushups', 0)
@@ -169,10 +172,13 @@ def get_stats():
                     if member_data.get('status') == 'participate':
                         member_stats[name]['days'] += 1
 
+            # 게스트 통계 및 상세 기록
             if 'guests' in record and record['guests']:
                 for guest_data in record['guests']:
                     guest_name = guest_data['name']
                     guest_total = guest_data.get('total_pushups', 0)
+                    guest_standard = guest_data.get('standard_pushups', 0)
+                    guest_knee = guest_data.get('knee_pushups', 0)
 
                     total_pushups += guest_total
                     daily_total += guest_total
@@ -180,10 +186,23 @@ def get_stats():
                     guest_stats['total_guests'] += 1
                     guest_stats['unique_guests'].add(guest_name)
 
+                    # 게스트 상세 기록 추가
+                    guest_records.append({
+                        'name': guest_name,
+                        'date': record['date'],
+                        'standard_pushups': guest_standard,
+                        'knee_pushups': guest_knee,
+                        'total_pushups': guest_total,
+                        'exercise_time': record.get('time', 10)
+                    })
+
             daily_totals.append(daily_total)
 
         max_daily = max(daily_totals) if daily_totals else 0
         guest_stats['unique_guests'] = len(guest_stats['unique_guests'])
+
+        # 게스트 기록을 최신순으로 정렬
+        guest_records.sort(key=lambda x: x['date'], reverse=True)
 
         return jsonify({
             'success': True,
@@ -192,7 +211,8 @@ def get_stats():
                 'total_pushups': total_pushups,
                 'max_daily': max_daily,
                 'member_stats': member_stats,
-                'guest_stats': guest_stats
+                'guest_stats': guest_stats,
+                'guest_records': guest_records  # 게스트 상세 기록 추가
             }
         })
 

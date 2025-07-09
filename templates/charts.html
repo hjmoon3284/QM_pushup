@@ -3,15 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        <!-- Open Graph 메타태그 -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="street_muscle_fighter">
-    <meta property="og:description" content="모여라 팔뚝왕 6인이여!!">
-    <meta property="og:image" content="https://qmpushup-production.up.railway.app/charts/static/images/og-image.png">
-    <meta property="og:url" content="https://qmpushup-production.up.railway.app/charts">
-    <meta property="og:site_name" content="푸시업 트래커">
-
     <title>푸시업 성장 분석</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -163,6 +154,72 @@
             border: 1px solid #e8dcc0;
         }
 
+        /* 게스트 테이블 스타일 */
+        .guest-records-section {
+            margin-top: 40px;
+        }
+
+        .guest-table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        .guest-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .guest-table th {
+            background-color: #f8f4e6;
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 15px 10px;
+            text-align: center;
+            border-bottom: 2px solid #e8dcc0;
+        }
+
+        .guest-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .guest-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .guest-table .guest-name {
+            font-weight: 600;
+            color: #8b7355;
+        }
+
+        .guest-table .pushup-count {
+            font-weight: 600;
+        }
+
+        .guest-table .total-count {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .guest-summary {
+            background-color: #f8f4e6;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e8dcc0;
+        }
+
+        .guest-summary-item {
+            display: inline-block;
+            margin: 0 15px;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .period-btn {
                 display: block;
@@ -180,6 +237,15 @@
 
             .container {
                 padding: 20px;
+            }
+
+            .guest-table {
+                font-size: 14px;
+            }
+
+            .guest-table th,
+            .guest-table td {
+                padding: 8px 5px;
             }
         }
     </style>
@@ -215,6 +281,31 @@
         <div class="team-charts" id="memberCharts">
             <div class="loading">데이터를 불러오는 중...</div>
         </div>
+
+        <!-- 게스트 기록 테이블 -->
+        <div class="guest-records-section" id="guestRecordsSection" style="display: none;">
+            <div class="chart-card">
+                <div class="chart-title">게스트 참여 기록</div>
+                <div class="guest-table-container">
+                    <table class="guest-table" id="guestTable">
+                        <thead>
+                            <tr>
+                                <th>이름</th>
+                                <th>날짜</th>
+                                <th>정자세</th>
+                                <th>무릎자세</th>
+                                <th>총 개수</th>
+                                <th>운동시간</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guestTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="guest-summary" id="guestSummary">
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -227,13 +318,116 @@
             '선주': '#8b7355',
             '효성': '#adb5bd',
             '현정': '#28a745',
-            '예솔': '#ffc107'
+            '재욱': '#ffc107'
         };
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('차트 페이지 로드됨');
+            console.log('🔥 페이지 로드 완료!');
             loadChartData();
+            loadGuestData(); // 게스트 데이터 로드
         });
+
+        // 🎯 게스트 데이터 전용 함수
+        function loadGuestData() {
+            console.log('🔥 게스트 데이터 로딩 시작!');
+
+            fetch('/get_stats')
+                .then(response => {
+                    console.log('🔥 서버 응답 받음:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('🔥 받은 전체 데이터:', data);
+                    if (data.success) {
+                        console.log('🔥 게스트 기록:', data.stats.guest_records);
+                        console.log('🔥 게스트 기록 개수:', data.stats.guest_records ? data.stats.guest_records.length : 0);
+                        displayGuestRecords(data.stats.guest_records);
+                    } else {
+                        console.error('🔥 API 응답 실패:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('🔥 게스트 데이터 로딩 오류:', error);
+                });
+        }
+
+        function displayGuestRecords(guestRecords) {
+            console.log('🔥 displayGuestRecords 함수 시작!');
+            console.log('🔥 받은 게스트 데이터:', guestRecords);
+
+            const guestSection = document.getElementById('guestRecordsSection');
+            const guestTableBody = document.getElementById('guestTableBody');
+            const guestSummary = document.getElementById('guestSummary');
+
+            console.log('🔥 DOM 요소들:', {
+                guestSection: !!guestSection,
+                guestTableBody: !!guestTableBody,
+                guestSummary: !!guestSummary
+            });
+
+            if (!guestRecords || guestRecords.length === 0) {
+                console.log('🔥 게스트 기록이 없어서 숨김');
+                guestSection.style.display = 'none';
+                return;
+            }
+
+            console.log('🔥 게스트 기록 있음! 테이블 표시 시작');
+
+            // 게스트 섹션 표시
+            guestSection.style.display = 'block';
+
+            // 테이블 내용 생성
+            let tableHTML = '';
+            let totalGuestPushups = 0;
+            let uniqueGuests = new Set();
+
+            guestRecords.forEach(record => {
+                totalGuestPushups += record.total_pushups;
+                uniqueGuests.add(record.name);
+
+                tableHTML += `
+                    <tr>
+                        <td class="guest-name">${record.name}</td>
+                        <td>${formatDate(record.date)}</td>
+                        <td class="pushup-count">${record.standard_pushups}개</td>
+                        <td class="pushup-count">${record.knee_pushups}개</td>
+                        <td class="total-count">${record.total_pushups}개</td>
+                        <td>${record.exercise_time}분</td>
+                    </tr>
+                `;
+            });
+
+            guestTableBody.innerHTML = tableHTML;
+            console.log('🔥 테이블 HTML 생성 완료');
+
+            // 게스트 요약 정보
+            const avgPushups = guestRecords.length > 0 ? Math.round(totalGuestPushups / guestRecords.length) : 0;
+            guestSummary.innerHTML = `
+                <div class="guest-summary-item">
+                    <strong>총 게스트:</strong> ${uniqueGuests.size}명
+                </div>
+                <div class="guest-summary-item">
+                    <strong>총 참여:</strong> ${guestRecords.length}회
+                </div>
+                <div class="guest-summary-item">
+                    <strong>총 푸시업:</strong> ${totalGuestPushups}개
+                </div>
+                <div class="guest-summary-item">
+                    <strong>평균:</strong> ${avgPushups}개/회
+                </div>
+            `;
+
+            console.log('🔥 게스트 요약 정보 생성 완료!');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString + 'T00:00:00');
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+
+            return `${year}.${month}.${day}`;
+        }
 
         function changePeriod(period) {
             currentPeriod = period;
@@ -243,47 +437,30 @@
             });
             event.target.classList.add('active');
 
-            console.log('기간 변경:', period);
             loadChartData();
         }
 
         function loadChartData() {
-            console.log('차트 데이터 로딩 시작, 기간:', currentPeriod);
-
-            // 기존 차트들 삭제
             Object.values(charts).forEach(chart => {
                 if (chart) chart.destroy();
             });
             charts = {};
 
             fetch(`/get_chart_data?period=${currentPeriod}`)
-                .then(response => {
-                    console.log('차트 데이터 응답 상태:', response.status);
-                    if (!response.ok) {
-                        throw new Error('네트워크 응답이 좋지 않습니다');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-                    console.log('받은 차트 데이터:', data);
                     if (data.success) {
                         createCharts(data.data);
                     } else {
                         console.error('차트 데이터 로딩 실패:', data.message);
-                        document.getElementById('memberCharts').innerHTML =
-                            '<div class="loading">데이터 로딩에 실패했습니다: ' + data.message + '</div>';
                     }
                 })
                 .catch(error => {
                     console.error('차트 데이터 로딩 오류:', error);
-                    document.getElementById('memberCharts').innerHTML =
-                        '<div class="loading">데이터 로딩 중 오류가 발생했습니다: ' + error.message + '</div>';
                 });
         }
 
         function createCharts(data) {
-            console.log('차트 생성 시작, 데이터:', data);
-
             if (!data.dates || data.dates.length === 0) {
                 document.getElementById('memberCharts').innerHTML =
                     '<div class="loading">분석할 데이터가 없습니다.<br>먼저 운동 기록을 입력해주세요!</div>';
@@ -372,11 +549,9 @@
             Object.keys(data.members).forEach(memberName => {
                 const memberData = data.members[memberName];
 
-                // 참여한 데이터가 있는 팀원만 차트 생성
                 const hasData = memberData.total.some(value => value > 0);
                 if (!hasData) return;
 
-                // 차트 카드 생성
                 const chartCard = document.createElement('div');
                 chartCard.className = 'chart-card';
                 chartCard.innerHTML = `
@@ -388,7 +563,6 @@
 
                 memberChartsContainer.appendChild(chartCard);
 
-                // 차트 생성
                 const ctx = document.getElementById(`chart-${memberName}`).getContext('2d');
 
                 charts[memberName] = new Chart(ctx, {
@@ -427,13 +601,7 @@
                         },
                         plugins: {
                             legend: {
-                                position: 'top',
-                                labels: {
-                                    usePointStyle: true,
-                                    font: {
-                                        size: 12
-                                    }
-                                }
+                                position: 'top'
                             }
                         },
                         scales: {
@@ -441,25 +609,13 @@
                                 beginAtZero: true,
                                 title: {
                                     display: true,
-                                    text: '푸시업 개수',
-                                    font: {
-                                        size: 12
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(0,0,0,0.05)'
+                                    text: '푸시업 개수'
                                 }
                             },
                             x: {
                                 title: {
                                     display: true,
-                                    text: currentPeriod === 'week' ? '날짜' : '기간',
-                                    font: {
-                                        size: 12
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(0,0,0,0.05)'
+                                    text: '기간'
                                 }
                             }
                         }
