@@ -365,6 +365,69 @@
             createMemberInputs();
         });
 
+
+        // Toast 메시지 표시 함수
+        function showSuccessToast(message) {
+            // 기존 toast 제거
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // 새 toast 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast success';
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            // 애니메이션 시작
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 400);
+            }, 2500);
+        }
+
+        function showErrorToast(message) {
+            // 기존 toast 제거
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // 새 toast 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast error';
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            // 애니메이션 시작
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // 3초 후 제거 (에러는 조금 더 오래)
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 400);
+            }, 3000);
+        }
+
+
         function createMemberInputs() {
             const memberList = document.getElementById('member-list');
             memberList.innerHTML = '';
@@ -499,7 +562,7 @@
             }
 
             const memberData = [];
-            욱.forEach(function(memberName, index) {
+            teamMembers.forEach(function(memberName, index) {
                 const statusSelect = document.getElementById(`status-${index}`);
                 const standardInput = document.getElementById(`standard-${index}`);
                 const kneeInput = document.getElementById(`knee-${index}`);
@@ -572,37 +635,76 @@
                     const totalKnee = [...memberData, ...guestData].reduce((sum, person) => sum + person.knee_pushups, 0);
                     const totalPushups = totalStandard + totalKnee;
 
-                    let message = `기록이 성공적으로 저장되었습니다!
-
-날짜: ${date}
-운동시간: ${time}분
-정규팀원: ${participantCount}명`;
-
+                    // Toast 메시지 표시
+                    let toastMessage = `기록 저장 완료! 총 ${totalPushups}개 💪`;
                     if (guestCount > 0) {
-                        message += `
-게스트: ${guestCount}명`;
+                        toastMessage = `기록 저장 완료! 정규팀원 ${participantCount}명, 게스트 ${guestCount}명 | 총 ${totalPushups}개 💪`;
                     }
 
-                    message += `
-정자세: ${totalStandard}개
-무릎자세: ${totalKnee}개
-총 푸시업: ${totalPushups}개
-기록 ID: ${data.record_id}`;
+                    showSuccessToast(toastMessage);
 
-                    alert(message);
+                    // 1초 후 기록 조회 페이지로 이동
+                    setTimeout(() => {
+                        window.location.href = '/records';
+                    }, 1000);
 
                 } else {
-                    alert('저장 실패: ' + data.message);
+                    showErrorToast('저장 실패: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('저장 오류:', error);
-                alert('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+                showErrorToast('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
             })
             .finally(() => {
                 saveBtn.disabled = false;
                 saveBtn.textContent = '오늘의 기록 저장하기';
             });
+
+                        /* Toast 메시지 스타일 */
+            .toast {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #28a745;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+                z-index: 1000;
+                font-weight: 600;
+                font-size: 16px;
+                transform: translateX(100%);
+                transition: transform 0.4s ease;
+                max-width: 350px;
+                word-wrap: break-word;
+            }
+
+            .toast.show {
+                transform: translateX(0);
+            }
+
+            .toast.success {
+                background-color: #28a745;
+                border-left: 4px solid #1e7e34;
+            }
+
+            .toast.error {
+                background-color: #dc3545;
+                border-left: 4px solid #bd2130;
+            }
+
+            @media (max-width: 768px) {
+                .toast {
+                    top: 10px;
+                    right: 10px;
+                    left: 10px;
+                    max-width: none;
+                    font-size: 14px;
+                    padding: 12px 20px;
+                }
+            }
+
         }
     </script>
 </body>
