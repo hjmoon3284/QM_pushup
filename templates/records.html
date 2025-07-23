@@ -234,6 +234,133 @@
             padding-bottom: 8px;
         }
 
+        /* 비밀번호 모달 스타일 */
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .password-modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+        }
+
+        .password-modal h3 {
+            color: #dc3545;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .password-modal p {
+            color: #6c757d;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .password-input.error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .password-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .password-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .password-btn.confirm {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .password-btn.confirm:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .password-btn.cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .password-btn.cancel:hover {
+            background-color: #495057;
+            transform: translateY(-2px);
+        }
+
+        .password-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #adb5bd;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #6c757d;
+        }
+
         @media (max-width: 768px) {
             .record-header {
                 flex-direction: column;
@@ -252,6 +379,19 @@
 
             .container {
                 padding: 20px;
+            }
+
+            .password-modal-content {
+                margin: 20% auto;
+                padding: 20px;
+            }
+
+            .password-buttons {
+                flex-direction: column;
+            }
+
+            .password-btn {
+                width: 100%;
             }
         }
     </style>
@@ -294,7 +434,35 @@
         </div>
     </div>
 
+    <!-- 비밀번호 확인 모달 -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-modal-content">
+            <span class="close-modal" onclick="closePasswordModal()">&times;</span>
+            <h3>🔒 기록 삭제 인증</h3>
+            <p>기록을 삭제하려면 비밀번호를 입력하세요.</p>
+            <p id="deleteRecordInfo" style="font-weight: bold; color: #2c3e50;"></p>
+
+            <input type="password"
+                   id="passwordInput"
+                   class="password-input"
+                   placeholder="비밀번호 입력"
+                   maxlength="4"
+                   autocomplete="off">
+
+            <div class="password-error" id="passwordError"></div>
+
+            <div class="password-buttons">
+                <button class="password-btn confirm" onclick="confirmDelete()">삭제</button>
+                <button class="password-btn cancel" onclick="closePasswordModal()">취소</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // 삭제할 기록 정보를 저장할 변수
+        let recordToDelete = null;
+        const DELETE_PASSWORD = '0000';
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('페이지 로드됨');
             loadRecords();
@@ -460,12 +628,94 @@
         }
 
         function deleteRecord(recordId, recordDate) {
-            const confirmDelete = confirm(`정말로 ${formatDate(recordDate)} 기록을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`);
+            // 삭제할 기록 정보 저장
+            recordToDelete = {
+                id: recordId,
+                date: recordDate
+            };
 
-            if (!confirmDelete) {
+            // 모달에 기록 정보 표시
+            document.getElementById('deleteRecordInfo').textContent =
+                `${formatDate(recordDate)} 기록을 삭제하시겠습니까?`;
+
+            // 모달 열기
+            openPasswordModal();
+        }
+
+        // 비밀번호 모달 열기
+        function openPasswordModal() {
+            const modal = document.getElementById('passwordModal');
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordError = document.getElementById('passwordError');
+
+            modal.style.display = 'block';
+            passwordInput.value = '';
+            passwordInput.classList.remove('error');
+            passwordError.textContent = '';
+
+            // 입력 필드에 포커스
+            setTimeout(() => {
+                passwordInput.focus();
+            }, 100);
+
+            // Enter 키 이벤트 리스너
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    confirmDelete();
+                }
+            });
+        }
+
+        // 비밀번호 모달 닫기
+        function closePasswordModal() {
+            const modal = document.getElementById('passwordModal');
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordError = document.getElementById('passwordError');
+
+            modal.style.display = 'none';
+            passwordInput.value = '';
+            passwordInput.classList.remove('error');
+            passwordError.textContent = '';
+            recordToDelete = null;
+        }
+
+        // 삭제 확인 및 실행
+        function confirmDelete() {
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordError = document.getElementById('passwordError');
+            const enteredPassword = passwordInput.value;
+
+            if (!enteredPassword) {
+                passwordError.textContent = '비밀번호를 입력하세요.';
+                passwordInput.classList.add('error');
+                passwordInput.focus();
                 return;
             }
 
+            if (enteredPassword !== DELETE_PASSWORD) {
+                passwordError.textContent = '비밀번호가 올바르지 않습니다.';
+                passwordInput.classList.add('error');
+                passwordInput.value = '';
+                passwordInput.focus();
+
+                // 2초 후 에러 메시지 제거
+                setTimeout(() => {
+                    passwordError.textContent = '';
+                    passwordInput.classList.remove('error');
+                }, 2000);
+
+                return;
+            }
+
+            // 비밀번호가 맞으면 실제 삭제 실행
+            if (recordToDelete) {
+                executeDelete(recordToDelete.id, recordToDelete.date);
+                closePasswordModal();
+            }
+        }
+
+        // 실제 삭제 실행 함수
+        function executeDelete(recordId, recordDate) {
             fetch(`/delete_record/${recordId}`, {
                 method: 'DELETE',
                 headers: {
@@ -492,15 +742,70 @@
                     }
 
                     loadStats();
-                    alert(data.message);
+                    showSuccessMessage(`${formatDate(recordDate)} 기록이 삭제되었습니다.`);
                 } else {
-                    alert('삭제 실패: ' + data.message);
+                    showErrorMessage('삭제 실패: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('삭제 오류:', error);
-                alert('삭제 중 오류가 발생했습니다: ' + error.message);
+                showErrorMessage('삭제 중 오류가 발생했습니다: ' + error.message);
             });
+        }
+
+        // 성공/에러 메시지 표시 함수들
+        function showSuccessMessage(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #28a745;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1001;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            `;
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function showErrorMessage(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #dc3545;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1001;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            `;
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('passwordModal');
+            if (event.target === modal) {
+                closePasswordModal();
+            }
         }
 
         function formatDate(dateString) {

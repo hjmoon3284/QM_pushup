@@ -66,124 +66,104 @@
             transform: translateY(-2px);
         }
 
-        .common-info {
-            background-color: #f8f4e6;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border: 1px solid #e8dcc0;
+        .date-input-section {
+            margin-bottom: 40px;
+            text-align: center;
         }
 
-        .member-records, .guest-records {
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 25px;
-            background-color: #ffffff;
-        }
-
-        .guest-records {
-            background-color: #faf8f5;
-            border-color: #d4b896;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
+        .date-input-section label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 600;
             color: #495057;
-            font-size: 14px;
+            font-size: 18px;
         }
 
-        input, select {
-            width: 100%;
-            padding: 12px 16px;
+        .date-input-section input {
+            padding: 15px 20px;
             border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 18px;
             background-color: #ffffff;
             transition: all 0.3s ease;
+            width: 250px;
         }
 
-        input:focus, select:focus {
+        .date-input-section input:focus {
             outline: none;
             border-color: #6c757d;
             box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
         }
 
-        .member-row {
-            display: grid;
-            grid-template-columns: 150px 1fr 1fr 120px;
-            gap: 20px;
-            align-items: center;
-            padding: 20px;
-            margin-bottom: 15px;
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .member-table, .guest-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .member-table th, .guest-table th {
             background-color: #f8f9fa;
-            border-radius: 10px;
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
+            color: #495057;
+            font-weight: 700;
+            padding: 18px 15px;
+            text-align: center;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 16px;
         }
 
-        .member-row:hover {
-            background-color: #e9ecef;
-            transform: translateY(-2px);
-        }
-
-        .guest-row {
-            display: grid;
-            grid-template-columns: 180px 1fr 1fr 80px;
-            gap: 20px;
-            align-items: center;
-            padding: 20px;
-            margin-bottom: 15px;
+        .guest-table th {
             background-color: #f5f2ed;
-            border-radius: 10px;
-            border: 1px solid #d4b896;
-            transition: all 0.3s ease;
+            border-bottom-color: #d4b896;
         }
 
-        .guest-row:hover {
-            background-color: #ede7dc;
-            transform: translateY(-2px);
+        .member-table td, .guest-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
         }
 
-        .member-name, .guest-name {
+        .member-table tbody tr:hover, .guest-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .guest-table tbody tr:hover {
+            background-color: #f5f2ed;
+        }
+
+        .member-name, .guest-name-cell {
             font-size: 18px;
             font-weight: 600;
             color: #2c3e50;
-            text-align: center;
         }
 
-        .guest-name {
+        .guest-name-cell {
             color: #8b7355;
         }
 
-        .pushup-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            text-align: center;
-        }
-
-        .pushup-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #6c757d;
-            margin-bottom: 5px;
-        }
-
         .pushup-input {
+            width: 100%;
+            max-width: 120px;
             text-align: center;
             font-size: 16px;
             font-weight: 600;
             border: 2px solid #dee2e6;
-            padding: 10px;
+            padding: 10px 8px;
             border-radius: 6px;
             background-color: #ffffff;
+            transition: all 0.3s ease;
         }
 
         .standard-input {
@@ -191,6 +171,7 @@
         }
 
         .standard-input:focus {
+            outline: none;
             border-color: #28a745;
             box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
         }
@@ -200,54 +181,44 @@
         }
 
         .knee-input:focus {
+            outline: none;
             border-color: #ffc107;
             box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
         }
 
         .guest-input {
             border-color: #8b7355;
+            max-width: 150px;
         }
 
         .guest-input:focus {
+            outline: none;
             border-color: #8b7355;
             box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
         }
 
         .status-select {
+            width: 100%;
+            max-width: 100px;
             font-size: 14px;
-            padding: 10px;
+            font-weight: 600;
+            padding: 10px 8px;
             border: 2px solid #6f42c1;
             border-radius: 6px;
             background-color: #ffffff;
+            text-align: center;
         }
 
         .status-select:focus {
+            outline: none;
             border-color: #6f42c1;
             box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1);
-        }
-
-        .add-guest-btn {
-            background-color: #8b7355;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .add-guest-btn:hover {
-            background-color: #6d5a44;
-            transform: translateY(-2px);
         }
 
         .remove-guest-btn {
             background-color: #dc3545;
             color: white;
-            padding: 8px 16px;
+            padding: 8px 12px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -261,17 +232,36 @@
             transform: scale(1.05);
         }
 
+        .add-guest-btn {
+            background-color: #8b7355;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .add-guest-btn:hover {
+            background-color: #6d5a44;
+            transform: translateY(-2px);
+        }
+
         .save-btn {
             background-color: #28a745;
             color: white;
             padding: 20px 40px;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             width: 100%;
-            margin-top: 30px;
+            margin-top: 40px;
             transition: all 0.3s ease;
         }
 
@@ -285,14 +275,6 @@
             background-color: #6c757d;
             cursor: not-allowed;
             transform: none;
-        }
-
-        h3 {
-            color: #2c3e50;
-            margin-bottom: 25px;
-            font-size: 22px;
-            font-weight: 400;
-            text-align: center;
         }
 
         /* Toast 메시지 스타일 */
@@ -329,12 +311,6 @@
         }
 
         @media (max-width: 768px) {
-            .member-row, .guest-row {
-                grid-template-columns: 1fr;
-                gap: 15px;
-                text-align: center;
-            }
-
             .container {
                 padding: 20px;
             }
@@ -342,6 +318,39 @@
             .nav-btn {
                 display: block;
                 margin: 8px 0;
+            }
+
+            .date-input-section input {
+                width: 100%;
+            }
+
+            .member-table, .guest-table {
+                font-size: 14px;
+            }
+
+            .member-table th, .guest-table th {
+                padding: 12px 8px;
+                font-size: 14px;
+            }
+
+            .member-table td, .guest-table td {
+                padding: 10px 5px;
+            }
+
+            .pushup-input {
+                max-width: 80px;
+                font-size: 14px;
+                padding: 8px 4px;
+            }
+
+            .guest-input {
+                max-width: 100px;
+            }
+
+            .status-select {
+                max-width: 80px;
+                font-size: 12px;
+                padding: 8px 4px;
             }
 
             .toast {
@@ -366,28 +375,46 @@
             <a href="/growth" class="nav-btn">개인 성장</a>
         </div>
 
-        <div class="common-info">
-            <h3>공통 정보</h3>
-
-            <div class="form-group">
-                <label for="exercise-date">운동 날짜:</label>
-                <input type="date" id="exercise-date" required>
-            </div>
-
-            <div class="form-group">
-                <label for="exercise-time">운동 시간 (분):</label>
-                <input type="number" id="exercise-time" min="1" max="60" value="10" required>
-            </div>
+        <div class="date-input-section">
+            <label for="exercise-date">운동 날짜</label>
+            <input type="date" id="exercise-date" required>
         </div>
 
         <div class="member-records">
-            <h3>정규 팀원 기록</h3>
-            <div id="member-list"></div>
+            <h2 class="section-title">정규 팀원 기록</h2>
+
+            <table class="member-table">
+                <thead>
+                    <tr>
+                        <th>팀원</th>
+                        <th>정자세</th>
+                        <th>무릎자세</th>
+                        <th>상태</th>
+                    </tr>
+                </thead>
+                <tbody id="member-tbody">
+                    <!-- 팀원 행들이 여기에 동적으로 추가됨 -->
+                </tbody>
+            </table>
         </div>
 
         <div class="guest-records">
-            <h3>오늘의 게스트</h3>
-            <div id="guest-list"></div>
+            <h2 class="section-title">오늘의 게스트</h2>
+
+            <table class="guest-table">
+                <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>정자세</th>
+                        <th>무릎자세</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody id="guest-tbody">
+                    <!-- 게스트 행들이 여기에 동적으로 추가됨 -->
+                </tbody>
+            </table>
+
             <button type="button" class="add-guest-btn" onclick="addGuest()">
                 게스트 추가하기
             </button>
@@ -468,26 +495,25 @@
                 dateInput.value = dateString;
             }
 
-            // 팀원 입력 필드 생성
-            createMemberInputs();
+            // 팀원 테이블 생성
+            createMemberTable();
+
+            // 게스트 기본 하나 추가
+            addGuest();
         });
 
-        function createMemberInputs() {
-            const memberList = document.getElementById('member-list');
-            if (!memberList) return;
+        function createMemberTable() {
+            const tbody = document.getElementById('member-tbody');
+            if (!tbody) return;
 
-            memberList.innerHTML = '';
+            tbody.innerHTML = '';
 
             teamMembers.forEach(function(memberName, index) {
-                const memberRow = document.createElement('div');
-                memberRow.className = 'member-row';
+                const row = document.createElement('tr');
 
-                memberRow.innerHTML = `
-                    <div class="member-name">
-                        ${memberName}
-                    </div>
-                    <div class="pushup-group">
-                        <div class="pushup-label">정자세</div>
+                row.innerHTML = `
+                    <td class="member-name">${memberName}</td>
+                    <td>
                         <input type="number"
                                class="pushup-input standard-input"
                                id="standard-${index}"
@@ -496,9 +522,8 @@
                                placeholder="0"
                                data-member="${memberName}"
                                data-type="standard">
-                    </div>
-                    <div class="pushup-group">
-                        <div class="pushup-label">무릎자세</div>
+                    </td>
+                    <td>
                         <input type="number"
                                class="pushup-input knee-input"
                                id="knee-${index}"
@@ -507,9 +532,8 @@
                                placeholder="0"
                                data-member="${memberName}"
                                data-type="knee">
-                    </div>
-                    <div class="pushup-group">
-                        <div class="pushup-label">상태</div>
+                    </td>
+                    <td>
                         <select class="status-select"
                                 id="status-${index}"
                                 data-member="${memberName}"
@@ -517,34 +541,30 @@
                             <option value="participate">참여</option>
                             <option value="absent">미참여</option>
                         </select>
-                    </div>
+                    </td>
                 `;
 
-                memberList.appendChild(memberRow);
+                tbody.appendChild(row);
             });
         }
 
         function addGuest() {
-            const guestList = document.getElementById('guest-list');
-            if (!guestList) return;
+            const tbody = document.getElementById('guest-tbody');
+            if (!tbody) return;
 
             const guestId = guestCounter++;
+            const row = document.createElement('tr');
+            row.id = `guest-row-${guestId}`;
 
-            const guestRow = document.createElement('div');
-            guestRow.className = 'guest-row';
-            guestRow.id = `guest-row-${guestId}`;
-
-            guestRow.innerHTML = `
-                <div class="pushup-group">
-                    <div class="pushup-label">이름</div>
+            row.innerHTML = `
+                <td>
                     <input type="text"
                            class="pushup-input guest-input"
                            id="guest-name-${guestId}"
                            placeholder="게스트 이름"
                            data-guest-id="${guestId}">
-                </div>
-                <div class="pushup-group">
-                    <div class="pushup-label">정자세</div>
+                </td>
+                <td>
                     <input type="number"
                            class="pushup-input standard-input"
                            id="guest-standard-${guestId}"
@@ -552,9 +572,8 @@
                            max="1000"
                            placeholder="0"
                            data-guest-id="${guestId}">
-                </div>
-                <div class="pushup-group">
-                    <div class="pushup-label">무릎자세</div>
+                </td>
+                <td>
                     <input type="number"
                            class="pushup-input knee-input"
                            id="guest-knee-${guestId}"
@@ -562,15 +581,15 @@
                            max="1000"
                            placeholder="0"
                            data-guest-id="${guestId}">
-                </div>
-                <div class="pushup-group">
+                </td>
+                <td>
                     <button type="button" class="remove-guest-btn" onclick="removeGuest(${guestId})">
                         삭제
                     </button>
-                </div>
+                </td>
             `;
 
-            guestList.appendChild(guestRow);
+            tbody.appendChild(row);
         }
 
         function removeGuest(guestId) {
@@ -602,10 +621,10 @@
 
         function saveRecord() {
             const date = document.getElementById('exercise-date').value;
-            const time = document.getElementById('exercise-time').value;
+            const time = 10; // 고정값
 
-            if (!date || !time) {
-                showErrorToast('날짜와 운동 시간을 입력해주세요!');
+            if (!date) {
+                showErrorToast('운동 날짜를 선택해주세요!');
                 return;
             }
 
@@ -630,7 +649,7 @@
             });
 
             const guestData = [];
-            const guestRows = document.querySelectorAll('.guest-row');
+            const guestRows = document.querySelectorAll('[id^="guest-row-"]');
 
             guestRows.forEach(function(row) {
                 const guestId = row.id.split('-')[2];
@@ -656,7 +675,7 @@
 
             const recordData = {
                 date: date,
-                time: parseInt(time),
+                time: time,
                 members: memberData,
                 guests: guestData
             };
