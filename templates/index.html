@@ -295,6 +295,39 @@
             text-align: center;
         }
 
+        /* Toast 메시지 스타일 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            z-index: 1000;
+            font-weight: 600;
+            font-size: 16px;
+            transform: translateX(100%);
+            transition: transform 0.4s ease;
+            max-width: 350px;
+            word-wrap: break-word;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background-color: #28a745;
+            border-left: 4px solid #1e7e34;
+        }
+
+        .toast.error {
+            background-color: #dc3545;
+            border-left: 4px solid #bd2130;
+        }
+
         @media (max-width: 768px) {
             .member-row, .guest-row {
                 grid-template-columns: 1fr;
@@ -309,6 +342,15 @@
             .nav-btn {
                 display: block;
                 margin: 8px 0;
+            }
+
+            .toast {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                font-size: 14px;
+                padding: 12px 20px;
             }
         }
     </style>
@@ -352,7 +394,7 @@
         </div>
 
         <button type="button" class="save-btn" onclick="saveRecord()">
-            오늘의 기록 저장하기
+            💪 오늘의 기록 저장하기
         </button>
     </div>
 
@@ -360,33 +402,23 @@
         const teamMembers = ['병선', '유경', '선주', '효성', '현정', '재욱'];
         let guestCounter = 0;
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('exercise-date').value = new Date().toISOString().split('T')[0];
-            createMemberInputs();
-        });
-
-
-        // Toast 메시지 표시 함수
+        // Toast 메시지 함수들
         function showSuccessToast(message) {
-            // 기존 toast 제거
             const existingToast = document.querySelector('.toast');
             if (existingToast) {
                 existingToast.remove();
             }
 
-            // 새 toast 생성
             const toast = document.createElement('div');
             toast.className = 'toast success';
             toast.textContent = message;
 
             document.body.appendChild(toast);
 
-            // 애니메이션 시작
             setTimeout(() => {
                 toast.classList.add('show');
             }, 100);
 
-            // 2.5초 후 제거
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => {
@@ -398,25 +430,21 @@
         }
 
         function showErrorToast(message) {
-            // 기존 toast 제거
             const existingToast = document.querySelector('.toast');
             if (existingToast) {
                 existingToast.remove();
             }
 
-            // 새 toast 생성
             const toast = document.createElement('div');
             toast.className = 'toast error';
             toast.textContent = message;
 
             document.body.appendChild(toast);
 
-            // 애니메이션 시작
             setTimeout(() => {
                 toast.classList.add('show');
             }, 100);
 
-            // 3초 후 제거 (에러는 조금 더 오래)
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => {
@@ -427,9 +455,27 @@
             }, 3000);
         }
 
+        // 페이지 로드 후 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 오늘 날짜 설정
+            const today = new Date();
+            const dateString = today.getFullYear() + '-' +
+                             String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                             String(today.getDate()).padStart(2, '0');
+
+            const dateInput = document.getElementById('exercise-date');
+            if (dateInput) {
+                dateInput.value = dateString;
+            }
+
+            // 팀원 입력 필드 생성
+            createMemberInputs();
+        });
 
         function createMemberInputs() {
             const memberList = document.getElementById('member-list');
+            if (!memberList) return;
+
             memberList.innerHTML = '';
 
             teamMembers.forEach(function(memberName, index) {
@@ -480,6 +526,8 @@
 
         function addGuest() {
             const guestList = document.getElementById('guest-list');
+            if (!guestList) return;
+
             const guestId = guestCounter++;
 
             const guestRow = document.createElement('div');
@@ -557,7 +605,7 @@
             const time = document.getElementById('exercise-time').value;
 
             if (!date || !time) {
-                alert('날짜와 운동 시간을 입력해주세요!');
+                showErrorToast('날짜와 운동 시간을 입력해주세요!');
                 return;
             }
 
@@ -613,8 +661,6 @@
                 guests: guestData
             };
 
-            console.log('서버로 전송할 데이터:', recordData);
-
             const saveBtn = document.querySelector('.save-btn');
             saveBtn.disabled = true;
             saveBtn.textContent = '저장 중...';
@@ -635,15 +681,13 @@
                     const totalKnee = [...memberData, ...guestData].reduce((sum, person) => sum + person.knee_pushups, 0);
                     const totalPushups = totalStandard + totalKnee;
 
-                    // Toast 메시지 표시
                     let toastMessage = `기록 저장 완료! 총 ${totalPushups}개 💪`;
                     if (guestCount > 0) {
-                        toastMessage = `기록 저장 완료! 정규팀원 ${participantCount}명, 게스트 ${guestCount}명 | 총 ${totalPushups}개 💪`;
+                        toastMessage = `저장 완료! 정규팀원 ${participantCount}명, 게스트 ${guestCount}명 | 총 ${totalPushups}개 💪`;
                     }
 
                     showSuccessToast(toastMessage);
 
-                    // 1초 후 기록 조회 페이지로 이동
                     setTimeout(() => {
                         window.location.href = '/records';
                     }, 1000);
@@ -654,57 +698,12 @@
             })
             .catch(error => {
                 console.error('저장 오류:', error);
-                showErrorToast('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+                showErrorToast('저장 중 오류가 발생했습니다.');
             })
             .finally(() => {
                 saveBtn.disabled = false;
-                saveBtn.textContent = '오늘의 기록 저장하기';
+                saveBtn.textContent = '💪 오늘의 기록 저장하기';
             });
-
-                        /* Toast 메시지 스타일 */
-            .toast {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background-color: #28a745;
-                color: white;
-                padding: 15px 25px;
-                border-radius: 10px;
-                box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
-                z-index: 1000;
-                font-weight: 600;
-                font-size: 16px;
-                transform: translateX(100%);
-                transition: transform 0.4s ease;
-                max-width: 350px;
-                word-wrap: break-word;
-            }
-
-            .toast.show {
-                transform: translateX(0);
-            }
-
-            .toast.success {
-                background-color: #28a745;
-                border-left: 4px solid #1e7e34;
-            }
-
-            .toast.error {
-                background-color: #dc3545;
-                border-left: 4px solid #bd2130;
-            }
-
-            @media (max-width: 768px) {
-                .toast {
-                    top: 10px;
-                    right: 10px;
-                    left: 10px;
-                    max-width: none;
-                    font-size: 14px;
-                    padding: 12px 20px;
-                }
-            }
-
         }
     </script>
 </body>
